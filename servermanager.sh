@@ -48,11 +48,11 @@ function startServer() {
         echo "Setting server name to $SERVER_NAME"
         sed -i "s/ServerName=\"[^\"]*\"/ServerName=\"$SERVER_NAME\"/" ${GAME_PATH}/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini
     fi
-    if [[ -n $SERVER_DESC ]]; then
-        echo "Setting server description to $SERVER_DESC"
-        sed -i "s/ServerDescription=\"[^\"]*\"/ServerDescription=\"$SERVER_DESC\"/" ${GAME_PATH}/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini
+    if [[ ! -z ${SERVER_DESCRIPTION+x} ]]; then
+        echo "Setting server description to $SERVER_DESCRIPTION"
+        sed -i "s/ServerDescription=\"[^\"]*\"/ServerDescription=\"$SERVER_DESCRIPTION\"/" ${GAME_PATH}/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini
     fi
-    if [[ -n $SERVER_PASSWORD ]]; then
+    if [[ ! -z ${SERVER_PASSWORD+x} ]]; then
         echo "Setting server password to $SERVER_PASSWORD"
         SERVER_PASSWORD=$SERVER_PASSWORD
         if [[ $SERVER_PASSWORD == "NONE" ]]; then
@@ -60,29 +60,13 @@ function startServer() {
         fi
         sed -i "s/ServerPassword=\"[^\"]*\"/ServerPassword=\"${SERVER_PASSWORD}\"/" ${GAME_PATH}/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini
     fi
-    if [[ -n $ADMIN_PASSWORD ]]; then
-        echo "Setting admin password to $ADMIN_PASSWORD"
-        sed -i "s/AdminPassword=\"[^\"]*\"/AdminPassword=\"$ADMIN_PASSWORD\"/" ${GAME_PATH}/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini
-    fi
-    if [[ -n $MAX_PLAYERS ]]; then
-        echo "Setting maximum player count to $MAX_PLAYERS"
-        sed -i "s/ServerPlayerMaxNum=[^,]*/ServerPlayerMaxNum=$MAX_PLAYERS/" ${GAME_PATH}/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini
-    fi
-    if [[ ! -z ${SERVER_DESCRIPTION+x} ]]; then
-        echo "Setting server description to $SERVER_DESCRIPTION"
-        sed -i "s/ServerDescription=\"[^\"]*\"/ServerDescription=\"$SERVER_DESCRIPTION\"/" ${GAME_PATH}/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini
-    fi
-    if [[ ! -z ${SERVER_PASSWORD+x} ]]; then
-        echo "Setting server password to $SERVER_PASSWORD"
-        sed -i "s/ServerPassword=\"[^\"]*\"/ServerPassword=\"$SERVER_PASSWORD\"/" ${GAME_PATH}/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini
-    fi
     if [[ ! -z ${ADMIN_PASSWORD+x} ]]; then
-        echo "Setting server admin password to $ADMIN_PASSWORD"
+        echo "Setting admin password to $ADMIN_PASSWORD"
         sed -i "s/AdminPassword=\"[^\"]*\"/AdminPassword=\"$ADMIN_PASSWORD\"/" ${GAME_PATH}/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini
     fi
     if [[ ! -z ${MAX_PLAYERS+x} ]]; then
         echo "Setting max-players to $MAX_PLAYERS"
-        sed -i "s/ServerPlayerMaxNum=[0-9]*/ServerPlayerMaxNum=$MAX_PLAYERS/" ${GAME_PATH}/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini
+        sed -i "s/ServerPlayerMaxNum=[^,]*/ServerPlayerMaxNum=$MAX_PLAYERS/" ${GAME_PATH}/Pal/Saved/Config/LinuxServer/PalWorldSettings.ini
     fi
 
     START_OPTIONS=""
@@ -98,7 +82,7 @@ function startServer() {
 function startMain() {
     if [[ -n $BACKUP_ENABLED ]] && [[ $BACKUP_ENABLED == "true" ]]; then
         # Preparing the cronlist file
-        echo "$BACKUP_CRON_EXPRESSION /backupmanager.sh" >> cronlist
+        echo "$BACKUP_CRON_EXPRESSION /backupmanager.sh" > cronlist
         # Making sure supercronic is enabled and the cronfile is loaded
         /usr/local/bin/supercronic cronlist &
     fi

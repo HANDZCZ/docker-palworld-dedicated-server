@@ -3,7 +3,7 @@ services:
   palworld-dedicated-server:
     build: .
     container_name: palworld-dedicated-server
-    image: handz/palworld-dedicated-server:latest
+    #image: handz/palworld-dedicated-server:latest
     restart: unless-stopped
     network_mode: bridge
     ports:
@@ -18,9 +18,11 @@ services:
       #- PUBLIC_IP=
       #- PUBLIC_PORT=
       - SERVER_NAME=
-      - SERVER_DESC=
+      - SERVER_DESCRIPTION=
       #- SERVER_PASSWORD=
       - ADMIN_PASSWORD=
+      - BACKUP_ENABLED=true
+      - BACKUP_CRON_EXPRESSION=0 * * * *
     volumes:
       - ./game:/palworld
     deploy:
